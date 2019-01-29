@@ -1,6 +1,8 @@
 import smtplib
+import time
 import config
 
+lastErrorsSent = time.time()
 errorLog = []
 
 def send_email(subject, msg):
@@ -26,8 +28,14 @@ def addError(errorInfo):
 	errorLog.append(errorInfo)
 
 def sendErrors():
+	if time.time() - lastErrorsSent < config.timeBetweenErrorMessages:
+		return
+	lastErrorsSent = time.time() #Might mean you get one error in one email then a fuck load in  the next
+	if len(errorLog) == 0:
+		return
 	message = "\n\n\n".join(errorLog)
 	send_email("Errors: " + len(errorLog), message)
+	errorLog = []
 
 def sendError(errorInfo):
 	send_email("Error", errorInfo)
