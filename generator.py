@@ -1,3 +1,8 @@
+import notifier
+
+from ECC import message
+from ECC import dataFromMessage
+
 def getTestCase(testNo, length):
 	if testNo > 2**length - 1:
 		return False
@@ -16,3 +21,14 @@ def testGenerator(finalLength):
 	for length in range(1, finalLength+1):
 		for n in range(0,2**length):
 			print(getTestCase(n, length))
+
+def testMessages(finalLength):
+	for l in range(1, finalLength + 1):
+		for n in range(0, 2**l):
+			v = getTestCase(n, l)
+			if dataFromMessage(message(v)) != v:
+				info = "Test Case: " + n + ", " + l + "\n"
+				info += "message: " + str(message(v)) + "\n"
+				info += "data back: " + str(dataFromMessage(message(v)))
+				notifier.sendError(info)
+				return
