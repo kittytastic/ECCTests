@@ -1,4 +1,5 @@
 import notifier
+import datetime
 
 from ECC import message
 from ECC import dataFromMessage
@@ -22,8 +23,9 @@ def testGenerator(finalLength):
 		for n in range(0,2**length):
 			print(getTestCase(n, length))
 
-def testMessages(finalLength):
-	for l in range(1, finalLength + 1):
+def testMessages(startLength, finalLength):
+	for l in range(startLength, finalLength + 1):
+		print("Starting", l, datetime.datetime.now())
 		for n in range(0, 2**l):
 			v = getTestCase(n, l)
 			if dataFromMessage(message(v)) != v:
