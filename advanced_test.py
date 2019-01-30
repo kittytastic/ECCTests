@@ -1,8 +1,8 @@
 import sys
 import random
 
-from qwrx21 import repetitionEncoder
-from qwrx21 import repetitionDecoder
+from answers import repetitionEncoder
+from answers import repetitionDecoder
 
 
 def random_noise(m, bits_to_flip):
