@@ -52,7 +52,8 @@ def fullHammingTest(v):
 	recoveredMessage = messageFromCodeword(decoded)
 	recoveredData = dataFromMessage(recoveredMessage)
 
-	assert v == recoveredData,{"recoverable": True,
+	assert v == recoveredData,{"Test": "fullHammingTest",
+	 "recoverable": True,
 	 "v": v,
 	 "message": m,
 	 "encoded": encoded,
@@ -62,19 +63,76 @@ def fullHammingTest(v):
 	 "recoveredData": recoveredData
 	}
 
-	#Not recoverable
+	Not recoverable
 	noise = advanced_test.random_noise(encoded, 2)
 	decoded = hammingDecoder(noise)
 
-	assert decoded == [], {"recoverable": False,
+	assert decoded == [], {"Test": "fullHammingTest",
+	 "recoverable": False,
 	 "v": v,
 	 "encoded": encoded,
 	 "noise": noise,
 	 "decoded": decoded
 	}
 
+def checkMessageLength(m):
+	r = math.ceil(math.log(len(m), 2))
+
+	while 2**r - r -1 > len(m):
+		r -= 1
+
+	while 2**r - r -1 < len(m):
+		r += 1
+
+	if r < 2:
+		r = 2
+
+	assert 2**r - r - 1 == len(m), {"Test": "checkMessageLength",
+	"m": m,
+	"length": len(m),
+	"r": r} 
+
+def checkHammingEncoderLength(c):
+	assert math.log(len(c) + 1, 2) % 1 == 0, {"Test": "checkHammingEncoderLength",
+	"c": c,
+	"length": len(c)}
+
+def checkHammingDecoderLength(c):
+	assert math.log(len(c) + 1, 2) % 1 == 0, {"Test": "checkHammingDecoderLength",
+	"c": c,
+	"length": len(c)}
+
+def checkMessageFromCodeword(m):
+	r = math.ceil(math.log(len(m), 2))
+
+	while 2**r - r -1 > len(m):
+		r -= 1
+
+	while 2**r - r -1 < len(m):
+		r += 1
+
+	if r < 2:
+		r = 2
+
+	assert 2**r - r - 1 == len(m), {"Test": "checkMessageFromCodeword",
+	"m": m,
+	"length": len(m),
+	"r": r}
+
+def checkVectorIsOnly01(v, test):
+	for i in v:
+		assert i == 0 or i == 1, {"Test": "checkVectorIsOnly01 following " + test,
+		"v": v}
+
+##Add test for get message from codeword, where code word is invalid
+
+
+
+
+
+
 def runTests(start, end):
-	for l in range(start, end):
+	for l in range(start, end + 1):
 		for n in range(0, 2**l):
 			v = getTestCase(n, l)
 			try:
@@ -85,5 +143,3 @@ def runTests(start, end):
 					info += key + ": " + str(val) + "\n"
 				notifier.addError(info)
 				notifier.sendErrors()
-
-runTests(1,2)
