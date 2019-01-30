@@ -5,15 +5,13 @@ from qwrx21 import repetitionEncoder
 from qwrx21 import repetitionDecoder
 
 
-def randomNoice(m, bits_to_flip):
+def random_noise(m, bits_to_flip):
 
     message_len = len(m)
-
     seen_pos = []
-
     flipped_count = 0
 
-    if bits_to_flip>message_len:
+    if bits_to_flip > message_len:
         sys.exit("Cannot flip more bits than there are bits in the message")
 
     while flipped_count < bits_to_flip:
@@ -22,8 +20,7 @@ def randomNoice(m, bits_to_flip):
         if not (pos in seen_pos):
             seen_pos.append(pos)
             m[pos] = flip_bit(m[pos])
-
-        flipped_count += 1
+            flipped_count += 1
 
     return m
 
@@ -37,7 +34,7 @@ def flip_bit(bit):
         sys.exit("Flipping bit that isn't 0 or 1")
 
 
-def test():
+def hard_coded_tests():
     assert repetitionEncoder([0], 4) == [0, 0, 0, 0]
     assert repetitionEncoder([1], 5) == [1, 1, 1, 1, 1]
 
@@ -49,39 +46,48 @@ def test():
     assert repetitionDecoder([1, 0, 0, 0]) == [0]
     assert repetitionDecoder([1, 1, 1, 0]) == [1]
 
-    # Test that repetition codes can encode and decode message WITHOUT interference
-    for i in range(100):
-        original_mes = [random.randint(0, 1)]
-        encoded = repetitionEncoder(original_mes, random.randint(2, 20))
-        decoded = repetitionDecoder(encoded)
 
-        #print("Orig: %s   Enc: %s   Dec: %s"%(original_mes,encoded,decoded))
-        assert original_mes == decoded
+# Encode a message using repetition code then decodes it
+def test_rep_encode_decode():
+    original_mes = [random.randint(0, 1)]
+    encoded = repetitionEncoder(original_mes, random.randint(2, 20))
+    decoded = repetitionDecoder(encoded)
 
-    # Test that repetition codes can encode and decode message WITHOUT interference
-    for i in range(100):
-        original_mes = [random.randint(0, 1)]
-        code_len = random.randint(2, 5)
-        error_bits = random.randint(1, code_len//2)
-
-        encoded = repetitionEncoder(original_mes, code_len)
-        scrambled = randomNoice(encoded,error_bits)
-        decoded = repetitionDecoder(scrambled)
-
-        expected = original_mes
-
-        if (code_len%2) == 0:
-            if error_bits == code_len//2:
-                expected = []
+    assert original_mes == decoded
 
 
-        print("Orig: %s   Enc: %s   Dec: %s   Exp: %s"%(original_mes,encoded,decoded,expected))
-        assert decoded == expected
+# Encode a message using repetition code applies random noise then decodes it
+def test_rep_encode_noise_decode():
+    original_mes = [random.randint(0, 1)]
+    code_len = random.randint(2, 5)
+    error_bits = random.randint(1, code_len // 2)
+    encoded = repetitionEncoder(original_mes, code_len)
+    scrambled = random_noise(encoded, error_bits)
+    decoded = repetitionDecoder(scrambled)
+    expected = original_mes
 
-    print("Passed repetition Tests")
+    if (code_len % 2) == 0:
+        if error_bits == code_len // 2:
+            expected = []
 
-for i in range(10):
-    k = [1]*5
-    print(randomNoice(k, 2))
+    assert decoded == expected
 
-#test()
+
+def test():
+    # Do all manually generated tests
+    print("Trying all hardcoded tests")
+    hard_coded_tests()
+    print("    - Passed")
+
+    # Test repetition code
+    print("Trying auto generated repetition code tests")
+    for i in range(10000):
+        test_rep_encode_decode()
+        test_rep_encode_noise_decode()
+    print("    - Passed")
+
+    print("All tests passed")
+
+
+print("---------------------- Advanced tester ----------------------")
+test()
