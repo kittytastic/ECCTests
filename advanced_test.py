@@ -3,6 +3,7 @@ import random
 
 from answers import repetitionEncoder
 from answers import repetitionDecoder
+from answers import message
 
 
 def random_noise(m, bits_to_flip):
@@ -33,6 +34,13 @@ def flip_bit(bit):
     else:
         sys.exit("Flipping bit that isn't 0 or 1")
 
+def random_message(length):
+    m = []
+    for i in range(length):
+        m.append(random.randint(0, 1))
+    return m
+
+
 
 def hard_coded_tests():
     assert repetitionEncoder([0], 4) == [0, 0, 0, 0]
@@ -45,6 +53,12 @@ def hard_coded_tests():
     assert repetitionDecoder([0, 0, 0, 0]) == [0]
     assert repetitionDecoder([1, 0, 0, 0]) == [0]
     assert repetitionDecoder([1, 1, 1, 0]) == [1]
+
+    assert message([1]) == [0, 0, 1, 1]
+    assert message([0, 0, 1]) == [0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0]
+    assert message([0, 1, 1, 0]) == [0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0]
+    assert message([1, 1, 1, 1, 0, 1]) == [0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0]
+    assert message([0, 1, 1, 0, 1]) == [0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0]
 
 
 # Encode a message using repetition code then decodes it
@@ -73,6 +87,21 @@ def test_rep_encode_noise_decode():
     assert decoded == expected
 
 
+# Check messages are of an expected length
+def test_message_length():
+    # max message length 100
+    original = random_message(random.randint(1,100))
+    length = len(message(original))
+
+    r = 2
+    l = 2**r - 2*r - 1
+    while l < length:
+        r += 1
+        l = 2 ** r - r - 1
+
+    assert l == length
+
+
 def test():
     # Do all manually generated tests
     print("Trying all hardcoded tests")
@@ -85,6 +114,13 @@ def test():
         test_rep_encode_decode()
         test_rep_encode_noise_decode()
     print("    - Passed")
+
+    print("Trying auto generated message only tests")
+    for i in range(10000):
+        test_message_length()
+
+    print("    - Passed")
+
 
     print("All tests passed")
 
