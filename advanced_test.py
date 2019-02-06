@@ -10,6 +10,14 @@ from answers import hammingEncoder
 from answers import hammingDecoder
 from answers import messageFromCodeword
 
+import pip
+# Attempt to import tqdm for epic loading bars
+try:
+    __import__('tqdm')
+except:
+    print("tqdm not installed. Installing..")
+    pip.main(['install', '--user', 'tqdm'])
+from tqdm import tqdm
 
 def random_noise(m, bits_to_flip):
 
@@ -161,13 +169,13 @@ def test():
 
     # Test repetition code
     print("Trying repetition code tests")
-    for i in range(10000):
+    for i in tqdm(range(10000)):
         test_rep_encode_decode()
         test_rep_encode_noise_decode()
     print("    - Passed")
 
     print("Trying message only tests")
-    for i in range(10000):
+    for i in tqdm(range(10000)):
         pass
         #test_message_length()
         #test_message_encode_decode()
@@ -175,11 +183,9 @@ def test():
     print("    - Passed")
 
     print("Trying full hamming cycle tests")
-    for i in range(10000):
+    for i in tqdm(range(10000)):
         test_full_ham_encode_cycle()
         test_full_ham_cycle_noise()
-        if i % 100 == 0:
-            print("%d %%"%(i//100))
     print("    - Passed")
 
 
