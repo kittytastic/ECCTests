@@ -191,5 +191,6 @@ def test():
     print("All tests passed")
 
 
-print("---------------------- Advanced tester ----------------------")
-test()
+if __name__ == "__main__":
+	print("---------------------- Advanced tester ----------------------")
+	test()
