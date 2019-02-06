@@ -166,5 +166,21 @@ def runTests(start, end):
 				for key, val in e.args[0].items():
 					info += key + ": " + str(val) + "\n"
 				print(info)
-				notifier.addError(info)
-				notifier.sendErrors()
+				# notifier.addError(info)
+				# notifier.sendErrors()
+
+def randomTest(count, maxLength):
+	for i in range(0, count):
+		v = advanced_test.random_message(random.randint(1,maxLength))
+
+		try:
+			fullHammingTest(v)
+		except AssertionError as e:
+			info = ""
+			for key, val in e.args[0].items():
+				info += key + ": " + str(val) + "\n"
+			print(info)
+
+
+if __name__ == "__main__":
+	randomTest(10000,100)
