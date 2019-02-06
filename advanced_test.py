@@ -10,13 +10,12 @@ from answers import hammingEncoder
 from answers import hammingDecoder
 from answers import messageFromCodeword
 
-import pip
+from pip._internal import main as pipmain
 # Attempt to import tqdm for epic loading bars
 try:
     __import__('tqdm')
 except:
-    print("tqdm not installed. Installing..")
-    pip.main(['install', '--user', 'tqdm'])
+    pipmain(['install', '--upgrade', 'tqdm'])
 from tqdm import tqdm
 
 def random_noise(m, bits_to_flip):
